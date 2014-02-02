@@ -51,21 +51,22 @@ if($comments=="comments")
 	$comments = NULL;
 }
 $amascounter=$_POST['amascounter'];
-$sql ="INSERT INTO expedition VALUES
-(NULL, '$_POST[deploydate]','$_POST[returndate]','$_POST[hooksday]',
-'$_POST[fishingdays]','$_POST[effort]','$_POST[gear]',
-'$_POST[detailarea]','$_POST[startsettingtime]','$startlat',
-'$startlon','$_POST[endsettime]','$endlat',
-'$endlon','$_POST[starthaultime]','$startlathaul',
-'startlonhaul','$_POST[endhaultime]','$endlathaul',
-'$endlonhaul','$_POST[lightsticks]','$_POST[infoorigin]',
-'$comments')";
-if (!mysqli_query($con,$sql))
-  {
-  die('1Error: ' . mysqli_error($con));
-  }
-  else
-  {
+if($amascounter==1){
+    $sql ="INSERT INTO expedition VALUES
+    (NULL, '$_POST[deploydate]','$_POST[returndate]','$_POST[hooksday]',
+    '$_POST[fishingdays]','$_POST[effort]','$_POST[gear]',
+    '$_POST[detailarea]','$_POST[startsettingtime]','$startlat',
+    '$startlon','$_POST[endsettime]','$endlat',
+    '$endlon','$_POST[starthaultime]','$startlathaul',
+    'startlonhaul','$_POST[endhaultime]','$endlathaul',
+    '$endlonhaul','$_POST[lightsticks]','$_POST[infoorigin]',
+    '$comments')";
+    if (!mysqli_query($con,$sql))
+    {
+        die('1Error: ' . mysqli_error($con));
+    }
+    else
+    {
 	  //Insert data to users_action_history ERROR: 2
 	  $expedition_ID=mysqli_insert_id($con);
 	  $useractions = "INSERT INTO users_action_history (action_ID, action_username, action_eexpedition_ID, action_date) VALUES
@@ -74,161 +75,356 @@ if (!mysqli_query($con,$sql))
 	  {
 		  die('2Error: ' . mysqli_error($con));
 	  }
-  }
-//Insert data to vessel_expeditions ERROR: 3
-for($i=1; $i<=$amascounter; $i++){
+    }
+    //Insert data to vessel_expeditions ERROR: 3
+    for($i=1; $i<=$amascounter; $i++){
         $amas = $_POST['AMAS'.$i];
         $vessel_expeditions="INSERT INTO vessel_expeditions VALUES ('$amas','$expedition_ID','$amascounter')";
         if(!mysqli_query($con, $vessel_expeditions)){
             die('3Error: ' . mysqli_error($con));
         }
     }
-//Insert expedition_size ERROR: 4 | 5
-$spcounter = $_POST['speciescounter'];
-for($i=0; $i<$spcounter; $i++)
-{
-	if($i==0)
-	{
-		$expedition_size="INSERT INTO expedition_size VALUES
+    //Insert expedition_size ERROR: 4 | 5
+    $spcounter = $_POST['speciescounter'];
+    for($i=0; $i<$spcounter; $i++)
+    {
+        if($i==0)
+        {
+            $expedition_size="INSERT INTO expedition_size VALUES
 		('$_POST[speciesweight]','$_POST[speciesnumber]','$_POST[species]','$expedition_ID')";
-		if(!mysqli_query($con,$expedition_size))
-		{
-			die('4Error: ' . mysqli_error($con));
-		}
-	}else if($i!=0)
-	{
-		$speciesweight = $_POST['speciesweight'.$i];
-		$speciesnumber= $_POST['speciesnumber'.$i];
-		$species= $_POST['species'.$i];
-		$expedition_size="INSERT INTO expedition_size VALUES
+            if(!mysqli_query($con,$expedition_size))
+            {
+                die('4Error: ' . mysqli_error($con));
+            }
+        }else if($i!=0)
+        {
+            $speciesweight = $_POST['speciesweight'.$i];
+            $speciesnumber= $_POST['speciesnumber'.$i];
+            $species= $_POST['species'.$i];
+            $expedition_size="INSERT INTO expedition_size VALUES
 		('$speciesweight','$speciesnumber','$species','$expedition_ID')";
-		if(!mysqli_query($con,$expedition_size))
-		{
-			die('5Error: ' . mysqli_error($con));
-		}	
-	}
-}
-//Insert species_measurements ERROR: 6 | 7
-$spmcounter=$_POST['speciesmeasurecounter'];
-for ($im=0; $im<=$spmcounter; $im++)
-{
-	//Get all the values for the $im field into variables
-	$speciesmeasure = $_POST['speciesmeasure_'.$im];
-	$fl=$_POST['measurefl_'.$im];
-	$ljfl=$_POST['measureljfl_'.$im];
-	$tl=$_POST['measuretl_'.$im];
-	$pffl=$_POST['measurpffl_'.$im];
-	$gg=$_POST['measuregg_'.$im];
-	$dw=$_POST['measuredw_'.$im];
-	$rw=$_POST['measurerw_'.$im];
-	$sex=$_POST['measuresex_'.$im];
-	$pfl=$_POST['measurepfl_'.$im];
-	$matur_stage=$_POST['measurematur_stage_'.$im];
-	$gon_wei=$_POST['measuregon_wei_'.$im];
-	$head_length=$_POST['measurehead_length_'.$im];
-	$life_status=$_POST['measurelife_status_'.$im];
-	$parasites=$_POST['measureparasites_'.$im];
-	$bait_type=$_POST['measurebait_type_'.$im];
-	$commercial=$_POST['measurecommercial_'.$im];
-	//If there is not species selected go to next $im in for()
-	if($speciesmeasure == NULL || $speciesmeasure == "")
-	{
-		echo 'h for() espase sto '.$im;
-		continue;
-	}
-	//Insert measurement if species is ALBacore
-	else if($speciesmeasure == "Albacore")
-	{
-		$insertspeciesmeasurement="INSERT INTO species_measurements VALUES
-		('$expedition_ID','$speciesmeasure',NULL)";
-		if(!mysqli_query($con,$insertspeciesmeasurement))
-		{
-			die('6Error: ' . mysqli_error($con));
-		}
-		$measure_ID=mysqli_insert_id($con);
-		$insertALBmeasure="INSERT INTO ALBmeasure VALUES 
-		('$measure_ID','$fl','$gg','$dw','$rw','$sex','$matur_stage','$gon_wei','$life_status','$bait_type','$commercial')";
-		if(!mysqli_query($con,$insertALBmeasure))
-		{
-			die('7Error: ' . mysqli_error($con));
-		}
-	}
-	//Insert measurement if species is Bluefin Tuna BFT
-	else if($speciesmeasure == "Bluefin Tuna")
-	{
-		$insertspeciesmeasurement="INSERT INTO species_measurements VALUES
-		('$expedition_ID','$speciesmeasure',NULL)";
-		if(!mysqli_query($con,$insertspeciesmeasurement))
-		{
-			die('6Error: ' . mysqli_error($con));
-		}
-		$measure_ID=mysqli_insert_id($con);
-		$insertBFTmeasure="INSERT INTO BFTmeasure VALUES 
-		('$measure_ID','$fl','$gg','$dw','$rw','$sex','$pfl','$matur_stage','$gon_wei','$life_status','$bait_type','$commercial')";
-		if(!mysqli_query($con,$insertBFTmeasure))
-		{
-			die('7Error: ' . mysqli_error($con));
-		}
-	}
-	//Insert measurement if species is Oilfish RVT
-	else if($speciesmeasure == "Oilfish")
-	{
-		$insertspeciesmeasurement="INSERT INTO species_measurements VALUES
-		('$expedition_ID','$speciesmeasure',NULL)";
-		if(!mysqli_query($con,$insertspeciesmeasurement))
-		{
-			die('6Error: ' . mysqli_error($con));
-		}
-		$measure_ID=mysqli_insert_id($con);
-		$insertRVTmeasure="INSERT INTO RVTmeasure VALUES 
-		('$measure_ID','$fl','$tl','$pffl','$gg','$dw','$rw','$sex','$life_status','$bait_type','$commercial')";
-		if(!mysqli_query($con,$insertRVTmeasure))
-		{
-			die('7Error: ' . mysqli_error($con));
-		}
-	}
-	//Insert measurement if species is SWOrdfish
-	else if($speciesmeasure == "Swordfish")
-	{
-		$insertspeciesmeasurement="INSERT INTO species_measurements VALUES
-		('$expedition_ID','$speciesmeasure',NULL)";
-		if(!mysqli_query($con,$insertspeciesmeasurement))
-		{
-			die('6Error: ' . mysqli_error($con));
-		}
-		$measure_ID=mysqli_insert_id($con);
-		$insertSWOmeasure="INSERT INTO SWOmeasure VALUES 
-		('$measure_ID','$ljfl','$gg','$sex','$rw','$dw','$pfl','$head_length','$matur_stage','$gon_wei','$parasites','$life_status','$bait_type','$commercial')";
-		if(!mysqli_query($con,$insertSWOmeasure))
-		{
-			die('7Error: ' . mysqli_error($con));
-		}
-	}
-	//Insert measurement if species is OTHER
-	else
-	{
-		$insertspeciesmeasurement="INSERT INTO species_measurements VALUES
-		('$expedition_ID','$speciesmeasure',NULL)";
-		if(!mysqli_query($con,$insertspeciesmeasurement))
-		{
-			die('6Error: ' . mysqli_error($con));
-		}
-		$measure_ID=mysqli_insert_id($con);
-		$scientificq="SELECT scientific FROM species WHERE common='$speciesmeasure'";
-		$resultsciq=mysqli_query($con,$scientificq);
-		$snamerow=mysqli_fetch_array($resultsciq);
-		$scientificname=$snamerow['scientific'];
-		$insertOTHERmeasure="INSERT INTO OTHERmeasure VALUES
-		('$measure_ID','$scientificname','$speciesmeasure','$fl','$tl','$gg','$dw','$rw','$sex','$life_status','$bait_type','$commercial')";
-		if(!mysqli_query($con,$insertOTHERmeasure))
-		{
-			die('7Error: ' . mysqli_error($con));
-		}
-	}
+            if(!mysqli_query($con,$expedition_size))
+            {
+                die('5Error: ' . mysqli_error($con));
+            }
+        }
+    }
+    //Insert species_measurements ERROR: 6 | 7
+    $spmcounter=$_POST['speciesmeasurecounter'];
+    for ($im=0; $im<=$spmcounter; $im++)
+    {
+        //Get all the values for the $im field into variables
+    	$speciesmeasure = $_POST['speciesmeasure_'.$im];
+	    $fl=$_POST['measurefl_'.$im];
+	    $ljfl=$_POST['measureljfl_'.$im];
+	    $tl=$_POST['measuretl_'.$im];
+	    $pffl=$_POST['measurpffl_'.$im];
+	    $gg=$_POST['measuregg_'.$im];
+	    $dw=$_POST['measuredw_'.$im];
+	    $rw=$_POST['measurerw_'.$im];
+	    $sex=$_POST['measuresex_'.$im];
+	    $pfl=$_POST['measurepfl_'.$im];
+	    $matur_stage=$_POST['measurematur_stage_'.$im];
+	    $gon_wei=$_POST['measuregon_wei_'.$im];
+	    $head_length=$_POST['measurehead_length_'.$im];
+	    $life_status=$_POST['measurelife_status_'.$im];
+	    $parasites=$_POST['measureparasites_'.$im];
+	    $bait_type=$_POST['measurebait_type_'.$im];
+	    $commercial=$_POST['measurecommercial_'.$im];
+	    //If there is not species selected go to next $im in for()
+	    if($speciesmeasure == NULL || $speciesmeasure == "")
+	    {
+		    echo 'h for() espase sto '.$im;
+		    continue;
+	    }
+	    //Insert measurement if species is ALBacore
+	    else if($speciesmeasure == "Albacore")
+	    {
+		    $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+		    if(!mysqli_query($con,$insertspeciesmeasurement))
+		    {
+			    die('6Error: ' . mysqli_error($con));
+		    }
+		    $measure_ID=mysqli_insert_id($con);
+		    $insertALBmeasure="INSERT INTO ALBmeasure VALUES
+		    ('$measure_ID','$fl','$gg','$dw','$rw','$sex','$matur_stage','$gon_wei','$life_status','$bait_type','$commercial')";
+		    if(!mysqli_query($con,$insertALBmeasure))
+		    {
+			    die('7Error: ' . mysqli_error($con));
+		    }
+	    }
+	    //Insert measurement if species is Bluefin Tuna BFT
+	    else if($speciesmeasure == "Bluefin Tuna")
+	    {
+		    $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+		    if(!mysqli_query($con,$insertspeciesmeasurement))
+		    {
+			    die('6Error: ' . mysqli_error($con));
+		    }
+		    $measure_ID=mysqli_insert_id($con);
+		    $insertBFTmeasure="INSERT INTO BFTmeasure VALUES
+		    ('$measure_ID','$fl','$gg','$dw','$rw','$sex','$pfl','$matur_stage','$gon_wei','$life_status','$bait_type','$commercial')";
+		    if(!mysqli_query($con,$insertBFTmeasure))
+		    {
+			    die('7Error: ' . mysqli_error($con));
+		    }
+	    }
+	    //Insert measurement if species is Oilfish RVT
+	    else if($speciesmeasure == "Oilfish")
+	    {
+		    $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+		    if(!mysqli_query($con,$insertspeciesmeasurement))
+		    {
+			    die('6Error: ' . mysqli_error($con));
+		    }
+		    $measure_ID=mysqli_insert_id($con);
+		    $insertRVTmeasure="INSERT INTO RVTmeasure VALUES
+		    ('$measure_ID','$fl','$tl','$pffl','$gg','$dw','$rw','$sex','$life_status','$bait_type','$commercial')";
+		    if(!mysqli_query($con,$insertRVTmeasure))
+		    {
+		    	die('7Error: ' . mysqli_error($con));
+		    }
+	    }
+	    //Insert measurement if species is SWOrdfish
+	    else if($speciesmeasure == "Swordfish")
+	    {
+	    	$insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+		    if(!mysqli_query($con,$insertspeciesmeasurement))
+		    {
+			    die('6Error: ' . mysqli_error($con));
+		    }
+		    $measure_ID=mysqli_insert_id($con);
+		    $insertSWOmeasure="INSERT INTO SWOmeasure VALUES
+		    ('$measure_ID','$ljfl','$gg','$sex','$rw','$dw','$pfl','$head_length','$matur_stage','$gon_wei','$parasites','$life_status','$bait_type','$commercial')";
+		    if(!mysqli_query($con,$insertSWOmeasure))
+		    {
+		    	die('7Error: ' . mysqli_error($con));
+		    }
+	    }
+	    //Insert measurement if species is OTHER
+	    else
+	    {
+		    $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+		    if(!mysqli_query($con,$insertspeciesmeasurement))
+		    {
+			    die('6Error: ' . mysqli_error($con));
+		    }
+		    $measure_ID=mysqli_insert_id($con);
+		    $scientificq="SELECT scientific FROM species WHERE common='$speciesmeasure'";
+		    $resultsciq=mysqli_query($con,$scientificq);
+		    $snamerow=mysqli_fetch_array($resultsciq);
+		    $scientificname=$snamerow['scientific'];
+		    $insertOTHERmeasure="INSERT INTO OTHERmeasure VALUES
+		    ('$measure_ID','$scientificname','$speciesmeasure','$fl','$tl','$gg','$dw','$rw','$sex','$life_status','$bait_type','$commercial')";
+		    if(!mysqli_query($con,$insertOTHERmeasure))
+		    {
+			    die('7Error: ' . mysqli_error($con));
+		    }
+	    }
 	
-}
+    }
 	  echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Expedition data stored succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
 	header("refresh:3;url=inserted.php");
+}
+/*################################################*/
+/*          IF $amascounter>1                     */
+/*################################################*/
+else {
+    for($k=1; $k<=$amascounter; $k++){
+        $effort=$_POST['effort']/$amascounter;
+        $sql ="INSERT INTO expedition VALUES
+        (NULL, '$_POST[deploydate]','$_POST[returndate]','$_POST[hooksday]',
+        '$_POST[fishingdays]','$effort','$_POST[gear]',
+        '$_POST[detailarea]','$_POST[startsettingtime]','$startlat',
+        '$startlon','$_POST[endsettime]','$endlat',
+        '$endlon','$_POST[starthaultime]','$startlathaul',
+        'startlonhaul','$_POST[endhaultime]','$endlathaul',
+        '$endlonhaul','$_POST[lightsticks]','$_POST[infoorigin]',
+        '$comments')";
+        if (!mysqli_query($con,$sql))
+        {
+            die('1Error: ' . mysqli_error($con));
+        }
+        else
+        {
+            //Insert data to users_action_history ERROR: 2
+            $expedition_ID=mysqli_insert_id($con);
+            $useractions = "INSERT INTO users_action_history (action_ID, action_username, action_eexpedition_ID, action_date) VALUES
+	        (NULL, '$usercheck', '$expedition_ID', NOW())";
+            if (!mysqli_query($con, $useractions))
+            {
+                die('2Error: ' . mysqli_error($con));
+            }
+        }
+        //Insert data to vessel_expeditions ERROR: 3
+
+            $amas = $_POST['AMAS'.$k];
+            $vessel_expeditions="INSERT INTO vessel_expeditions VALUES ('$amas','$expedition_ID','$amascounter')";
+            if(!mysqli_query($con, $vessel_expeditions)){
+                die('3Error: ' . mysqli_error($con));
+            }
+
+        //Insert expedition_size ERROR: 4 | 5
+        /*h IF mpainei giati to prwto pedio exei onomata species, speciesnumber kai oxi species0 klp.*/
+        $spcounter = $_POST['speciescounter'];
+        for($i=0; $i<$spcounter; $i++)
+        {
+            if($i==0)
+            {
+                $species= $_POST['species'];
+                $speciesnumber=$_POST['speciesnumber']/$amascounter;
+                $speciesweight=$_POST['speciesweight']/$amascounter;
+                $expedition_size="INSERT INTO expedition_size VALUES
+		        ('$speciesweight','$speciesnumber','$species','$expedition_ID')";
+                if(!mysqli_query($con,$expedition_size))
+                {
+                    die('4Error: ' . mysqli_error($con));
+                }
+            }else if($i!=0)
+            {
+                $speciesweight = $_POST['speciesweight'.$i]/$amascounter;
+                $speciesnumber= $_POST['speciesnumber'.$i]/$amascounter;
+                $species= $_POST['species'.$i];
+                $expedition_size="INSERT INTO expedition_size VALUES
+		        ('$speciesweight','$speciesnumber','$species','$expedition_ID')";
+                if(!mysqli_query($con,$expedition_size))
+                {
+                    die('5Error: ' . mysqli_error($con));
+                }
+            }
+        }
+    }
+        /*#######################################*/
+        /*Measurements will be inserted in the last expedition_ID inserted into DB*/
+        /*#######################################*/
+        //Insert species_measurements ERROR: 6 | 7
+        $spmcounter=$_POST['speciesmeasurecounter'];
+        for ($im=0; $im<$spmcounter; $im++)
+        {
+            //Get all the values for the $im field into variables
+            $speciesmeasure = $_POST['speciesmeasure_'.$im];
+            $fl=$_POST['measurefl_'.$im];
+            $ljfl=$_POST['measureljfl_'.$im];
+            $tl=$_POST['measuretl_'.$im];
+            $pffl=$_POST['measurpffl_'.$im];
+            $gg=$_POST['measuregg_'.$im];
+            $dw=$_POST['measuredw_'.$im];
+            $rw=$_POST['measurerw_'.$im];
+            $sex=$_POST['measuresex_'.$im];
+            $pfl=$_POST['measurepfl_'.$im];
+            $matur_stage=$_POST['measurematur_stage_'.$im];
+            $gon_wei=$_POST['measuregon_wei_'.$im];
+            $head_length=$_POST['measurehead_length_'.$im];
+            $life_status=$_POST['measurelife_status_'.$im];
+            $parasites=$_POST['measureparasites_'.$im];
+            $bait_type=$_POST['measurebait_type_'.$im];
+            $commercial=$_POST['measurecommercial_'.$im];
+            //If there is not species selected go to next $im in for()
+            if($speciesmeasure == NULL || $speciesmeasure == "")
+            {
+                echo 'Species not specified in row:' . $im . ' this measurement wont be inserted into database!';
+                continue;
+            }
+            //Insert measurement if species is ALBacore
+            else if($speciesmeasure == "Albacore")
+            {
+                $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+                if(!mysqli_query($con,$insertspeciesmeasurement))
+                {
+                    die('6Error: ' . mysqli_error($con));
+                }
+                $measure_ID=mysqli_insert_id($con);
+                $insertALBmeasure="INSERT INTO ALBmeasure VALUES
+		    ('$measure_ID','$fl','$gg','$dw','$rw','$sex','$matur_stage','$gon_wei','$life_status','$bait_type','$commercial')";
+                if(!mysqli_query($con,$insertALBmeasure))
+                {
+                    die('7Error: ' . mysqli_error($con));
+                }
+            }
+            //Insert measurement if species is Bluefin Tuna BFT
+            else if($speciesmeasure == "Bluefin tuna")
+            {
+                $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+                if(!mysqli_query($con,$insertspeciesmeasurement))
+                {
+                    die('6Error: ' . mysqli_error($con));
+                }
+                $measure_ID=mysqli_insert_id($con);
+                $insertBFTmeasure="INSERT INTO BFTmeasure VALUES
+		    ('$measure_ID','$fl','$gg','$dw','$rw','$sex','$pfl','$matur_stage','$gon_wei','$life_status','$bait_type','$commercial')";
+                if(!mysqli_query($con,$insertBFTmeasure))
+                {
+                    die('7Error: ' . mysqli_error($con));
+                }
+            }
+            //Insert measurement if species is Oilfish RVT
+            else if($speciesmeasure == "Oilfish")
+            {
+                $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+                if(!mysqli_query($con,$insertspeciesmeasurement))
+                {
+                    die('6Error: ' . mysqli_error($con));
+                }
+                $measure_ID=mysqli_insert_id($con);
+                $insertRVTmeasure="INSERT INTO RVTmeasure VALUES
+		    ('$measure_ID','$fl','$tl','$pffl','$gg','$dw','$rw','$sex','$life_status','$bait_type','$commercial')";
+                if(!mysqli_query($con,$insertRVTmeasure))
+                {
+                    die('7Error: ' . mysqli_error($con));
+                }
+            }
+            //Insert measurement if species is SWOrdfish
+            else if($speciesmeasure == "Swordfish")
+            {
+                $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+                if(!mysqli_query($con,$insertspeciesmeasurement))
+                {
+                    die('6Error: ' . mysqli_error($con));
+                }
+                $measure_ID=mysqli_insert_id($con);
+                $insertSWOmeasure="INSERT INTO SWOmeasure VALUES
+		    ('$measure_ID','$ljfl','$gg','$sex','$rw','$dw','$pfl','$head_length','$matur_stage','$gon_wei','$parasites','$life_status','$bait_type','$commercial')";
+                if(!mysqli_query($con,$insertSWOmeasure))
+                {
+                    die('7Error: ' . mysqli_error($con));
+                }
+            }
+            //Insert measurement if species is OTHER
+            else
+            {
+                $insertspeciesmeasurement="INSERT INTO species_measurements VALUES
+		    ('$expedition_ID','$speciesmeasure',NULL)";
+                if(!mysqli_query($con,$insertspeciesmeasurement))
+                {
+                    die('6Error: ' . mysqli_error($con));
+                }
+                $measure_ID=mysqli_insert_id($con);
+                $scientificq="SELECT scientific FROM species WHERE common='$speciesmeasure'";
+                $resultsciq=mysqli_query($con,$scientificq);
+                $snamerow=mysqli_fetch_array($resultsciq);
+                $scientificname=$snamerow['scientific'];
+                $insertOTHERmeasure="INSERT INTO OTHERmeasure VALUES
+		    ('$measure_ID','$scientificname','$speciesmeasure','$fl','$tl','$gg','$dw','$rw','$sex','$life_status','$bait_type','$commercial')";
+                if(!mysqli_query($con,$insertOTHERmeasure))
+                {
+                    die('7Error: ' . mysqli_error($con));
+                }
+            }
+
+        }
+        echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Expedition data stored succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
+        header("refresh:3;url=inserted.php");
+
+}
 
 mysqli_close($con);
 ?>

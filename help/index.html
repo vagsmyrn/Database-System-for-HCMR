@@ -29,7 +29,31 @@
                 });
             });
         });
-$(function ())
+        $(function(){
+            // Check the initial Poistion of the Sticky Header
+            var stickyHeaderTop = $('#tableofcontents').offset().top;
+
+            $(window).scroll(function(){
+                if( $(window).scrollTop() > stickyHeaderTop ) {
+                    $('#tableofcontents').css({position: 'fixed', top: '0px', opacity: '0.8'});
+                } else {
+                    $('#tableofcontents').css({position: 'static', top: '0px', opacity: '1'});
+                }
+            });
+        });
+        $(function(){
+            var sticky = $('#tableofcontents').offset().top;
+            $('#tableofcontents').mouseover(function(){
+                $("#tableofcontents").css({opacity: '1'});
+            });
+            $('#tableofcontents').mouseleave(function(){
+                if($(window).scrollTop() > sticky) {
+                    $('#tableofcontents').css("opacity","0.8");
+                } else {
+                    $('#tableofcontents').css("opacity","1");
+                }
+            });
+        });
     </script>
     <title>Large Pelagic Database :: Help</title>
 </head>

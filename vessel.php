@@ -18,13 +18,7 @@ else {
 	$privcheck=1;
 	$usercheck=0;
 	}
-$con=mysqli_connect('localhost', 'root', 'george2533', 'ELKETHE_DB');
-
-if (mysqli_connect_errno()){
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-
-mysqli_set_charset($con, "utf8");
+require_once('dbcon.php');
 
 $sql="INSERT INTO vessel (AMAS, vessel_name, reg_no_state, port, port_area, grt, vl, vlc, vw, hp, navigation, communication)
 VALUES
@@ -47,13 +41,13 @@ if (!mysqli_query($con,$sql))
 {
 die('3Error: ' . mysqli_error($con));
 }else{
-$lastId = $con->insert_id;
+$lastId1 = $con->insert_id;
 }
 
 $sql="INSERT INTO production (production_ID, year, SWOproduction, ALBproduction, BFTproduction, RVTproduction, fishing_days, 
 wtc, bait)
 VALUES
-($lastId,'$_POST[year]','$_POST[SWOproduction]','$_POST[ALBproduction]','
+($lastId1,'$_POST[year]','$_POST[SWOproduction]','$_POST[ALBproduction]','
   $_POST[BFTproduction]','$_POST[RVTproduction]','$_POST[fishing_days]','
   $_POST[wtc]','$_POST[bait]')";
 
@@ -74,7 +68,7 @@ die('3Error: ' . mysqli_error($con));
 $lastId = $con->insert_id;
 }
 
-$sql="INSERT INTO dynamic_vessel (vessel_production_ID, Winch_type, year, float_distance, branch_line_distance, ml_diameter, bl_diameter, bl_legnth, float_length, hooks_set, hooks_no, extra_comments)
+$sql="INSERT INTO dynamic_vessel (vessel_production_ID, Winch_type, year, float_distance, branch_line_distance, ml_diameter, bl_diameter, bl_length, float_length, hooks_set, hooks_no, extras)
 VALUES
 ($lastId,'$_POST[Winch_type]','$_POST[year]','$_POST[float_distance]','
   $_POST[branch_line_distance]','$_POST[ml_diameter]','$_POST[bl_diameter]','
@@ -86,9 +80,9 @@ if (!mysqli_query($con,$sql))
   }
   
 
-$query="INSERT INTO users_action_history (action_AMAS)
+$query="INSERT INTO users_action_history (action_ID, action_username, action_AMAS, action_vproduction_ID, action_pproduction_ID, action_date)
 VALUES
-('$_POST[amas]')";
+(NULL, '$usercheck', '$_POST[amas]', '$lastId', '$lastId1', NOW())";
 
 if (!mysqli_query($con,$query))
   {

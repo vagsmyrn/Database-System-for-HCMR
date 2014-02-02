@@ -50,9 +50,9 @@ if (!mysqli_query($con,$sql))
   }
   
 
-$query="INSERT INTO users_action_history (action_AMAS)
+$query="INSERT INTO users_action_history (action_ID, action_username, action_pproduction_ID, action_date)
 VALUES
-('$_POST[takeamas]')";
+(NULL, '$usercheck', '$lastId', NOW())";
 
 if (!mysqli_query($con,$query))
   {
@@ -60,10 +60,9 @@ if (!mysqli_query($con,$query))
   }
   else
 {
-  echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Vessel data stored succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
+  echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Production data stored succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
 header("refresh:5;url=index.php");
 } 
-
 
 mysqli_close($con);
 ?>

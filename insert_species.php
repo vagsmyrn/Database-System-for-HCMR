@@ -18,14 +18,7 @@ else {
 	$privcheck=1;
 	$usercheck=0;
 	}
-$con=mysqli_connect('localhost', 'root', 'george2533', 'ELKETHE_DB');
-
-if (mysqli_connect_errno()){
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-
-mysqli_set_charset($con, "utf8");
-  
+require_once('dbcon.php');
   $sql="INSERT INTO species (scientific, common)
 VALUES
 ('$_POST[scientific]', '$_POST[common]')";
@@ -33,9 +26,13 @@ VALUES
 if (!mysqli_query($con,$sql))
 {
 die('3Error: ' . mysqli_error($con));
-}else{
-echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Species inserted succesfully</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
-header("refresh:5;url=index.php");}
+}  else
+{
+  echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Species inserted succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
+header("refresh:5;url=index.php");
+} 
+
+
 
 
 

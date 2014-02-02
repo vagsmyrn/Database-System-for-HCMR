@@ -263,7 +263,13 @@ else if($_POST['selectquery'] === "expedition")
         $columns='*';
     }
     //AMAS check
-    $amas = $_POST['searchv'];
+    if($_POST['searchv']==='0'){
+        $amas='0';
+    } elseif($_POST['searchv']!=""){
+        $amas=$_POST['searchv'];
+    } else {
+        $amas=NULL;
+    }
     //Deploy Date FROM and TO check
     if(empty($_POST['deploydatefrom']))
     {
@@ -281,7 +287,7 @@ else if($_POST['selectquery'] === "expedition")
     {
         $dateto = $_POST['deploydateto'];
     }
-    if(!empty($amas))
+    if(!is_null($amas))
     {
         if($columns=="*"){
             $expeditionq="CREATE TEMPORARY TABLE IF NOT EXISTS tmptable AS

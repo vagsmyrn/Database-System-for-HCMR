@@ -38,7 +38,7 @@ die('3Error: ' . mysqli_error($con));
 $lastId = $con->insert_id;
 }
 
-$sql="INSERT INTO dynamic_vessel (vessel_production_ID, Winch_type, year, float_distance, branch_line_distance, ml_diameter, bl_diameter, bl_legnth, float_length, hooks_set, hooks_no, extra_comments)
+$sql="INSERT INTO dynamic_vessel (vessel_production_ID, Winch_type, year, float_distance, branch_line_distance, ml_diameter, bl_diameter, bl_length, float_length, hooks_set, hooks_no, extras)
 VALUES
 ($lastId,'$_POST[Winch_type]','$_POST[year]','$_POST[float_distance]','
   $_POST[branch_line_distance]','$_POST[ml_diameter]','$_POST[bl_diameter]','
@@ -50,9 +50,9 @@ if (!mysqli_query($con,$sql))
   }
   
 
-$query="INSERT INTO users_action_history (action_AMAS)
+$query="INSERT INTO users_action_history (action_ID, action_username, action_vproduction_ID, action_date)
 VALUES
-('$_POST[takeamas]')";
+(NULL, '$usercheck', '$lastId', NOW())";
 
 if (!mysqli_query($con,$query))
   {
@@ -60,10 +60,9 @@ if (!mysqli_query($con,$query))
   }
   else
 {
-  echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Vessel data stored succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
+  echo "<img src=\"img/tick.png\" width=\"25\" height=\"25\" /><strong>Gear data stored succesfully!</strong> <p> You are redirected to homepage... </p><p> <i>if you aren't redirected <a href=\"index.php\">click here</a></i></p>";
 header("refresh:5;url=index.php");
 } 
-
 
 mysqli_close($con);
 ?>

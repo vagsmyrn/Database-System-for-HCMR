@@ -36,7 +36,6 @@ if (pass==null || pass=="")
 
 </head>
 <body>
-<body>
 <div id="wrapper">
 	<div id="header">
         <blockquote><h1>Large Pelagic Database</h1></blockquote>
@@ -47,6 +46,8 @@ if (pass==null || pass=="")
     	<div id="menu">
      <?php
 	 require_once("menu.php");
+	 if($privcheck == "admin" || $privcheck == "moderator" || $privcheck == "user" && $usercheck != "" && $usercheck != NULL) 
+					 {
 	  ?></div>
 
         
@@ -106,6 +107,12 @@ if (pass==null || pass=="")
 				  </form>
                   </div>
 		</div>
+        <?php }
+
+       else 
+       {
+       	echo "You have to login to see this page!";
+       }      ?>
     <div id="footer"><a href="help/index.html" target="_blank">HELP</a></div>
 </div>
 </body>

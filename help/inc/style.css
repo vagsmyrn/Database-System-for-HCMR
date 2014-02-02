@@ -76,25 +76,24 @@ ol>li{
 /*Custom Elements ID*/
 #container {
     width: 95%;
-    border: 1px solid darkgray;
-    margin-top: 20px;
+    border: 2px solid #000;
+    margin-top: 30px;
     margin-bottom: 20px;
     margin-right: auto;
     margin-left: auto;
     background-color: #ffffff;
-    display: inline-block;
     padding: 5px;
 }
 #tableofcontents {
     width: 100%;
     float: left;
-    margin: 0;
+    margin:0;
     padding: 0;
     list-style: none;
     background-color: #ccc;
-    border-bottom: 1px solid #000;
+    border-bottom: 2px solid #000;
     font-size: 0px;
-    position: fixed;
+    top:0px;
     background-image: url(anchor.png);
     background-repeat: no-repeat;
     background-position: left center;
@@ -136,6 +135,9 @@ ol>li{
     float: left;
     text-align: center;
     border-right: 1px solid #000;
+}
+#toclist li:last-child{
+    border-right: 0px solid #000;
 }
 #toclist li:hover{
     background-color: #ccc;

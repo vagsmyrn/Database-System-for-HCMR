@@ -16,7 +16,6 @@ else {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Large Pelagic Database</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
 function check()
 {
@@ -47,28 +46,35 @@ if (pass==null || pass=="")
     	<div id="menu">
      <?php
 	 require_once("menu.php");
+	 require_once("dbcon.php");
 	 if($privcheck == "admin" || $privcheck == "moderator" || $privcheck == "user" && $usercheck != "" && $usercheck != NULL) 
 					 {
 	  ?></div>
-    	        <div id="content">
-					 <?php
-					 
-                  		echo "<h2>Insert AMAS or vessel name to search for vessels</h2>";
-                 		echo "<form id=\"searchform\" method=\"post\" onsubmit=\"return false;\">
-						<input autocomplete=\"off\" id=\"searchbox\" name=\"searchv\" onkeyup=\"sendRequest()\" onclick=\"sendRequest()\" type=\"textbox\">
-        				</form>
-						<div id=\"show_results\">
-						</div>
-						<script src=\"prototype.js\" type=\"text/javascript\"></script>
-						<script>
-						function sendRequest() {
-							new Ajax.Updater('show_results', 'getvessel_edit.php', { method: 'post', parameters: $('searchform').serialize() });
-						}
-         				</script>"; 
-					?>
-    	        </div>
-			     </div>
-                 <?php }
+        <div id="content">
+    	          <h2>EDIT EXPEDITION SIZE DATA</h2>
+                  
+                  <?php
+				  		$name = $_GET["expsize"];
+						$sql="SELECT * FROM expedition_size WHERE size_expedition_ID = '$name'";
+						$result = mysqli_query($con, $sql);
+						$row = mysqli_fetch_array($result);
+				  
+				  ?>
+                  
+    	          <form action="change_expsize.php" method="post" >
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                  	<tr><th>Change the fields you want and press submit</th></tr>
+                    <tr><td>expedition size ID:</td>			<td><input type="text" name="size_expedition_ID" value=" <?php echo $row['size_expedition_ID'];?>"></td></tr>
+                    <tr><td>Weight:</td> 	<td><input type="text" name="weight" value=" <?php echo $row['weight'];?>"></td></tr>
+                    <tr><td>Num:</td> 	<td><input type="text" name="num" value=" <?php echo $row['num'];?>"></td></tr>
+                    <tr><td>Species:</td> 			<td><input type="text" name="species" value=" <?php echo $row['species'];?>"></td></tr>
+                    <tr><td>Commercial:</td>		<td><input type="text" name="commercial" value=" <?php echo $row['commercial'];?>"></td></tr>
+                    <tr><td><input type="submit" id="button" name="Submit"></td></tr>
+                  </table>
+				  </form>
+                  </div>
+		</div>
+        <?php }
 
        else 
        {

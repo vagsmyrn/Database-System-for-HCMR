@@ -13,7 +13,7 @@ else {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
+<title>Large Pelagic Database</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
 <link href='css/redmond/jquery-ui-1.10.3.custom.min.css' rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="jquery.js"></script>
@@ -35,8 +35,10 @@ else {
     	<div id="menu">
      <?php
 	 require_once("menu.php");
+	 if($privcheck == "admin" || $privcheck == "moderator" || $privcheck == "user" && $usercheck != "" && $usercheck != NULL) 
+					 {
 	  ?></div>
-
+			
 	<div id="content">
         <div class="left">
         <h2>Edit Species</h2>
@@ -57,7 +59,8 @@ else {
 			  echo "<tr>";
 			  echo "<td>" . $row['scientific'] . "</td>";
 			  echo "<td>" . $row['common'] . "</td>";
-			  echo "<td><a href=remove_species.php?name=" . $row['common'] . ">Remove Entry</a></td>";
+			  $name = $row['common'];
+			  echo "<td><a href=remove_species.php?name=" . urlencode($name) . ">Remove Entry</a></td>";
 			  echo "</tr>";
 			  }
 			  
@@ -139,12 +142,18 @@ else {
                 <tr><td><input type="submit" id="button" name="Submit"></td></tr>
                 </table>
         </form>
-        
+        <?php }
+
+       else 
+       {
+       	echo "You have to login to see this page!";
+       }      ?>
         </div>
         
         
         
     </div>
 </div>
+
 </body>
 </html>

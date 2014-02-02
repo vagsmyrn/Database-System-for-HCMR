@@ -70,14 +70,6 @@ if (pass==null || pass=="")
                                 })
                             })
                         });
-                        /*$(function () {
-                            $("#useractions").keyup(function () {
-                                $.post("getuah.php", $("#useractions").serialize(), function (data) {
-                                    $("#useractions").html(data);
-                                    $("#useractions").show("slow");
-                                })
-                            })
-                        });*/
                     </script>
 
 				<?php

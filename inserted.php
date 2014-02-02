@@ -284,10 +284,6 @@ echo '<form action="expedition.php" method="post" id="insertform" name="insertfo
             <td>Detail Area:</td>
             <td><input name="detailarea" type="text" /></td>
           </tr>
-                    <tr>
-            <td>Area Code:</td>
-            <td><input name="areacode" type="text" /></td>
-          </tr>
           <tr>
             <td>Gear:</td>
             <td><input name="gear" type="text" /></td>

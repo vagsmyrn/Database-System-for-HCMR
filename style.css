@@ -566,7 +566,7 @@ input[type=submit]:focus{
 }
 
 #scrollit {
-    overflow:scroll;
+    overflow:auto;
     height:246px;
 }
 

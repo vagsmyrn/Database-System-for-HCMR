@@ -68,15 +68,7 @@ if (pass==null || pass=="")
   return false;
   }
 }
-    function checkAMAS() {
-        var amas=document.forms["analysis"]["searchv"].value;
-        var selectval=document.forms["analysis"]["selectquery"].value;
-        if(selectval === "expedition"){
-            if(amas == null || amas == ""){
-                confirm("No AMAS selected, do you want to see all Vessel and Expedition data?");
-            }
-        }
-    }
+
 </script>
 
 </head>
@@ -284,22 +276,42 @@ if (pass==null || pass=="")
           </tr>
                              </table>
                            </div>
-                            <input type="button" id="searchanalysis" value="Submit" onclick="checkAMAS()"/>
+                            <input type="button" id="searchanalysis" value="Submit"/>
                          </form>
                          <div id="analysis_results"></div>
     <script>
-
-                        $(function () {
-                            $("#searchanalysis").click(function () {
-                                $.post("analysisdata.php", $("#analysis").serialize(), function (data) {
-                                    $("#analysis_results").html(data);
-                                    $("#analysis_results").show();
-                                })
-                            })
+        $(function () {
+            $("#searchanalysis").click(function () {
+                var selectval=document.forms["analysis"]["selectquery"].value;
+                if(selectval === "measurements"){
+                $.post("analysisdata.php", $("#analysis").serialize(), function (data) {
+                    $("#analysis_results").html(data);
+                    $("#analysis_results").show("slow");
+                });
+                }else if(selectval === "expedition"){
+                    var amas=document.forms["analysis"]["searchv"].value;
+                    if(amas == null || amas == ""){
+                        var conf=confirm("No AMAS selected, do you want to see all Vessel and Expedition data?");
+                        if (conf==true){
+                            $.post("analysisdata.php", $("#analysis").serialize(), function (data) {
+                                $("#analysis_results").html(data);
+                                $("#analysis_results").show("slow");
+                            });
+                        } else{
+                            $("#analysis_results").hide("slow");
+                        }
+                    }else{
+                        $.post("analysisdata.php", $("#analysis").serialize(), function (data) {
+                            $("#analysis_results").html(data);
+                            $("#analysis_results").show("slow");
                         });
+                    }
+                }
 
-						var metritis=0;
-						$('#searchbox').keypress(function(){
+            });
+        });
+        				$('#searchbox').keyup(function(){
+                            var metritis=0;
 							$.post('getvessel.php', $("#searchbox").serialize(), function(data){
 								$('#showamas').html(data);
                                 if(metritis == 0){
